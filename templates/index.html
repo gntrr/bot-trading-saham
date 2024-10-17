@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Monitoring</title>
+    <link href="/static/css/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Live Stock Monitoring</h2>
+        <form id="stock-form" class="mb-4">
+            <label for="ticker" class="block text-sm font-medium text-gray-700">Stock Ticker</label>
+            <input type="text" id="ticker" name="ticker" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+            
+            <label for="algorithm" class="block text-sm font-medium text-gray-700 mt-4">Algorithm</label>
+            <select id="algorithm" name="algorithm" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                <option value="SVM">SVM</option>
+                <option value="NaiveBayes">Naive Bayes</option>
+            </select>
+
+            <button type="submit" class="mt-4 w-full bg-blue-500 text-white p-2 rounded-md">Start Monitoring</button>
+        </form>
+        
+        <div id="graph-container">
+            <h3 class="text-lg font-bold mb-2">Stock Price Chart</h3>
+            <img id="stock-graph" src="" alt="Stock Graph">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('stock-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const ticker = document.getElementById('ticker').value;
+            const algorithm = document.getElementById('algorithm').value;
+
+            fetch('/monitor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticker: ticker, algorithm: algorithm })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status);
+            });
+
+            const graph = document.getElementById('stock-graph');
+            setInterval(function() {
+                fetch('/stock_graph').then(response => response.text()).then(image => {
+                    graph.src = image;
+                });
+            }, 60000); // Update graph setiap 1 menit
+        });
+    </script>
+</body>
+</html>
