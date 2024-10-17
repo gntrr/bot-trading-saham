@@ -13,7 +13,7 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8 text-blue-700">Stock Monitoring Bot</h1>
         
-        <!-- Form untuk memasukkan Stock Ticker -->
+        <!-- Form untuk memasukkan Stock Ticker dan Algoritma -->
         <div class="max-w-lg mx-auto bg-white shadow-md rounded px-8 py-6">
             <form id="stock-form" class="space-y-4">
                 <div>
@@ -21,6 +21,17 @@
                     <input type="text" id="ticker" name="ticker" required
                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
+                
+                <!-- Dropdown untuk memilih algoritma -->
+                <div>
+                    <label for="algorithm" class="block text-sm font-medium text-gray-700">Choose Prediction Algorithm:</label>
+                    <select id="algorithm" name="algorithm" required
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="svm">SVM</option>
+                        <option value="naive_bayes">Naive Bayes</option>
+                    </select>
+                </div>
+
                 <div>
                     <button type="submit"
                             class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
@@ -32,7 +43,7 @@
 
         <!-- Status Output -->
         <div class="mt-10 max-w-lg mx-auto bg-white shadow-md rounded px-8 py-6">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Status</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4" id="status-title">Status</h2>
             <p id="action" class="text-lg font-medium text-green-600">Action: -</p>
             <p id="reason" class="text-lg text-gray-600">Reason: -</p>
             <div class="mt-4">
@@ -45,9 +56,11 @@
         $('#stock-form').on('submit', function(event) {
             event.preventDefault();
             var ticker = $('#ticker').val();
-            
-            $.post('/start', {ticker: ticker}, function(response) {
+            var algorithm = $('#algorithm').val();  // Ambil algoritma yang dipilih
+
+            $.post('/start', {ticker: ticker, algorithm: algorithm}, function(response) {
                 alert(response.status);
+                $('#status-title').text('Status prediksi (' + ticker + ')');  // Update status
                 updateStatus();
             });
         });
