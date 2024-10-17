@@ -47,10 +47,12 @@
 
             const graph = document.getElementById('stock-graph');
             setInterval(function() {
-                fetch('/stock_graph').then(response => response.text()).then(image => {
-                    graph.src = image;
-                });
-            }, 60000); // Update graph setiap 1 menit
+                fetch(`/stock_graph?ticker=${ticker}&algorithm=${algorithm}`)
+                    .then(response => response.text())
+                    .then(image => {
+                        graph.src = image;
+                    });
+            }, 60000); // Update setiap 1 menit
         });
     </script>
 </body>
