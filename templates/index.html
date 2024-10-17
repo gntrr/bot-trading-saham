@@ -2,62 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Monitoring</title>
+    <title>Stock Monitoring Bot</title>
+<!--     <script src="https://cdn.tailwindcss.com"></script> -->
     <link href="/static/css/tailwind.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="bg-gray-100 p-10">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Live Stock Monitoring</h2>
-        <form id="stock-form" method="post" class="mb-4">
-            <label for="ticker" class="block text-sm font-medium text-gray-700">Stock Ticker</label>
-            <input type="text" id="ticker" name="ticker" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
-            
-            <label for="algorithm" class="block text-sm font-medium text-gray-700 mt-4">Algorithm</label>
-            <select id="algorithm" name="algorithm" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
-                <option value="SVM">SVM</option>
-                <option value="NaiveBayes">Naive Bayes</option>
-            </select>
-
-            <button type="submit" class="mt-4 w-full bg-blue-500 text-white p-2 rounded-md">Start Monitoring</button>
-        </form>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-700">Stock Monitoring Bot</h1>
         
-        <div id="graph-container">
-            <h3 class="text-lg font-bold mb-2">Stock Price Chart</h3>
-            <img id="stock-graph" src="" alt="Stock Graph">
+        <!-- Form untuk memasukkan Stock Ticker -->
+        <div class="max-w-lg mx-auto bg-white shadow-md rounded px-8 py-6">
+            <form id="stock-form" class="space-y-4">
+                <div>
+                    <label for="ticker" class="block text-sm font-medium text-gray-700">Enter Stock Ticker:</label>
+                    <input type="text" id="ticker" name="ticker" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <button type="submit"
+                            class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        Start Monitoring
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Status Output -->
+        <div class="mt-10 max-w-lg mx-auto bg-white shadow-md rounded px-8 py-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Status</h2>
+            <p id="action" class="text-lg font-medium text-green-600">Action: -</p>
+            <p id="reason" class="text-lg text-gray-600">Reason: -</p>
+            <div class="mt-4">
+                <img id="graph" src="" alt="Stock Graph" class="w-full h-auto rounded shadow-md">
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('stock-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-        
-            const ticker = document.getElementById('ticker').value;
-            const algorithm = document.getElementById('algorithm').value;
-        
-            // Kirim permintaan POST untuk memulai monitoring
-            fetch('/monitor', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ticker: ticker, algorithm: algorithm })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.status);
+        $('#stock-form').on('submit', function(event) {
+            event.preventDefault();
+            var ticker = $('#ticker').val();
+            
+            $.post('/start', {ticker: ticker}, function(response) {
+                alert(response.status);
+                updateStatus();
             });
-        
-            const graph = document.getElementById('stock-graph');
-        
-            // Set interval untuk memperbarui grafik setiap menit
-            setInterval(function() {
-                fetch(`/stock_graph?ticker=${ticker}&algorithm=${algorithm}`)
-                    .then(response => response.blob())  // Ambil gambar dalam bentuk blob
-                    .then(imageBlob => {
-                        const imageUrl = URL.createObjectURL(imageBlob);  // Buat URL dari blob
-                        graph.src = imageUrl;  // Set image src ke URL yang benar
-                    });
-            }, 60000); // Update setiap 1 menit
         });
+
+        function updateStatus() {
+            setInterval(function() {
+                $.get('/status', function(data) {
+                    $('#action').text('Action: ' + data.action);
+                    $('#reason').text('Reason: ' + data.reason);
+                    if (data.graph_url) {
+                        $('#graph').attr('src', data.graph_url);
+                    }
+                });
+            }, 60000); // Update setiap menit
+        }
     </script>
 </body>
 </html>
