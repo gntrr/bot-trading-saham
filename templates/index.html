@@ -31,10 +31,11 @@
     <script>
         document.getElementById('stock-form').addEventListener('submit', function(e) {
             e.preventDefault();
-
+        
             const ticker = document.getElementById('ticker').value;
             const algorithm = document.getElementById('algorithm').value;
-
+        
+            // Kirim permintaan POST untuk memulai monitoring
             fetch('/monitor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,13 +45,16 @@
             .then(data => {
                 console.log(data.status);
             });
-
+        
             const graph = document.getElementById('stock-graph');
+        
+            // Set interval untuk memperbarui grafik setiap menit
             setInterval(function() {
                 fetch(`/stock_graph?ticker=${ticker}&algorithm=${algorithm}`)
-                    .then(response => response.text())
-                    .then(image => {
-                        graph.src = image;
+                    .then(response => response.blob())  // Ambil gambar dalam bentuk blob
+                    .then(imageBlob => {
+                        const imageUrl = URL.createObjectURL(imageBlob);  // Buat URL dari blob
+                        graph.src = imageUrl;  // Set image src ke URL yang benar
                     });
             }, 60000); // Update setiap 1 menit
         });
