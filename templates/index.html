@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Monitoring Bot</title>
+    <title>Bot Monitoring Saham</title>
 <!--     <script src="https://cdn.tailwindcss.com"></script> -->
     <link href="/static/css/tailwind.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8 text-blue-700">Stock Monitoring Bot</h1>
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-700">Bot Monitoring Saham</h1>
         
         <!-- Form untuk memasukkan Stock Ticker dan Algoritma -->
         <div class="max-w-lg mx-auto bg-white shadow-md rounded px-8 py-6">
             <form id="stock-form" class="space-y-4">
                 <div>
-                    <label for="ticker" class="block text-sm font-medium text-gray-700">Enter Stock Ticker:</label>
+                    <label for="ticker" class="block text-sm font-medium text-gray-700">Masukkan Kode Saham:</label>
                     <input type="text" id="ticker" name="ticker" required
                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
                 
                 <!-- Dropdown untuk memilih algoritma -->
                 <div>
-                    <label for="algorithm" class="block text-sm font-medium text-gray-700">Choose Prediction Algorithm:</label>
+                    <label for="algorithm" class="block text-sm font-medium text-gray-700">Pilih Algoritma Prediksi:</label>
                     <select id="algorithm" name="algorithm" required
                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         <option value="svm">SVM</option>
@@ -35,7 +35,7 @@
                 <div>
                     <button type="submit"
                             class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                        Start Monitoring
+                        Mulai Monitoring
                     </button>
                 </div>
             </form>
